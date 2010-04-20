@@ -1,0 +1,344 @@
+ysfDimensionsPlugin
+===================
+
+ysfDimensionsPlugin allows you to customize the behavior of your symfony application based on any runtime factors.  You can adjust the configuration, template selection, and action behavior based on a combination of dimensions chosen by you.  For instance, you can have a different navigation structure based on the country of the user or a cobrand, or a different logo URL based on the current skin.  These factors that affect the behavior (in this case, the country of the user and the skin selected) are the dimensions, and you may define as many as you wish.
+
+Dimensions work by adding another level of cascading configuration, as well as by altering the location of the template or altering the name of the action class. All of this is made easy due to the forward thinking flexibility of symfony.
+
+Getting Started
+---------------
+
+*For setting up ysfDimensionsPlugin for use with symfony 1.0 projects, please see (http://trac.symfony-project.com/browser/plugins/ysfDimensionsPlugin/branches/1.0/README).*
+
+Requirements
+------------
+
+*ysfDimensionsPlugin uses APC by default and it should be enabled in the command line.*
+
+You may need to edit your php.ini:
+
+    apc.enabled=1
+    apc.enable_cli=1
+    apc.cache_by_default=1
+    apc.stat=1
+
+
+Installation
+------------
+
+*1. Install the plugin via the symfony cli*
+
+    symfony plugin:install ysfDimensionsPlugin
+
+*2. Clear symfony cache*
+
+    symfony cache:clear
+
+
+You can also install via subversion:
+
+    cd project/plugins;
+    svn export http://svn.symfony-project.com/plugins/ysfDimensionsPlugin/branches/1.1/ ysfDimensionsPlugin
+
+
+Configuration
+-------------
+
+*1. Configure your project and application configuration to use this plugin*
+
+Open project/config/ProjectConfiguration.class.php in your favorite text editor, then:
+
+Add:
+
+    // manually require class since not part of symfony core
+    require_once(dirname(__FILE__).'/../plugins/ysfDimensionsPlugin/lib/config/ysfProjectConfiguration.class.php');
+
+
+Then change the parent class from sfProjectConfiguration to *ysfProjectConfiguration*.
+
+    // manually require class since not part of symfony core
+    require_once(dirname(__FILE__).'/../../../plugins/ysfDimensionsPlugin/lib/config/ysfApplicationConfiguration.class.php');
+
+
+Edit apps/example/config/exampleConfiguration.class.php changing the parent class from sfApplicationConfiguration to *ysfApplicationConfiguration*.
+
+Now that the dimensions hooks are in place, you need to configure your application, by following the steps below:
+
+*2. Defining Available Dimensions*
+
+First we need to define the different dimensions a page may have and define all allowed values.
+The ysfDimensionsPlugin is configurable via the dimensions.yml configuration file in project/config/dimensions.yml.
+
+
+    allowed:
+      culture: 		  [en, fr, it, de]
+      theme: 		  [classic, corporate]
+
+
+*3. Setting the Current Dimension + subscribing to the user.change_culture event (if user culture is a dimension)*
+
+Edit project/config/ProjectConfiguration.class.php
+
+
+	class ProjectConfiguration extends ysfProjectConfiguration
+	{
+	  public function setup()
+	  {  	    
+	    // setup dimensions before calling parent::configure();
+	    $this->setDimension(array('culture' => isset($_REQUEST['sf_culture']) ? $_REQUEST['sf_culture'] : 'en_US'));
+	    
+	    $this->dispatcher->connect('user.change_culture', array($this, 'listenToChangeUserCulture'));
+	  	  	
+	    parent::setup();
+	  }
+	  
+	
+	  /**
+	   * Listener for the user.change_culture event.
+	   */
+	  public static function listenToChangeUserCulture(sfEvent $event)
+	  {
+	    $user = $event->getSubject();
+	    $culture = $event['culture'];
+	
+	    // do something with the user culture
+			sfProjectConfiguration::getActive()->setDimension(array('culture' => $event['culture']));
+	  }
+	}
+
+For now we're just setting the theme and culture based on a request parameter.
+You will likely not want to base the dimension off raw user input, but of
+something else, like the host name or stored user preferences.
+
+
+Examples
+--------
+
+So what's really going on here?  We need to vary the site behavior based upon
+various parameters.  Above, we're using the culture of the request as the
+parameter, but we can use other settings like theme or colo as parameters as
+well.  We can then specify several aspects of the symfony experience by means
+of these dimensions.  For instance, we can specify different site logos
+depending on the theme, or different servers depending on the culture, or
+different page content based on the culture (for example, language translations
+of a page).  We can also inherit functionality between settings, so if culture
+=> fr is almost the same as the generic configuration, it can inherit the
+settings and just specify the changes it needs. We will go more into how this
+works later, first lets explain the dimension configuration.
+
+    allowed:
+      culture: 		  [en, fr, it, de]
+      theme: 		  [classic, corporate]
+
+Our dimensions.yml file describes two levels of dimensions. The first named
+'culture' that has four possible values: 'en, fr, it, de', and a second
+dimension named 'theme' that has two possible values 'classic' and 'corporate'.
+
+Any request can be for any combination of the dimensions culture and theme.
+Here we have configured eight posssible unique dimensions (en_classic,
+en_corporate, fr_classic, fr_corporate, it_classic, it_corporate, de_classic,
+de_corporate). Dimensions function by looking in special directories for
+configuration or template files. For example, if the current dimension was set
+as culture => en, theme => classic, then symfony would form the dimension
+string 'en_classic'. When symfony looks for a configuration or template file it
+will insert a new order of precedence: first it will load files from
+'en', then 'corporate', and then 'en_corporate'.  Regardless of the dimension
+all of these will look in the generic (non dimension-specific) location for
+settings last.  This means that if you don't want to specialize your behavior
+at all, you can put settings in the same locations in symfony as you did before
+using the ysfDimensionsPlugin.
+
+There are three parts of the system that are configured by these settings:
+configuration, templates, and actions.  All dimensions-specific files live
+underneath a dimension-specific directory.  For app-level configuration, the
+directory is in apps/<app>/modules/[config, templates]/<dimension>/*.  For
+module-level configuration, it's in apps/<app>/modules/<module>/[actions,
+config, templates, validate]/<dimension>/*
+
+Let's talk a little about each of these.
+
+
+Extending Configuration
+-----------------------
+
+symfony makes great use of configuration files to set up your web site.  These
+files live in various config/ directories.  The settings largely end up in the
+sfConfig object where you can fetch them from your application.
+
+We handle the settings.yml, app.yml, routing.yml, databases.yml, module.yml, view.yml,
+security.yml, mailer.yml, cache.yml, i18n.yml, and validate/*.yml as well.
+
+You should put the dimension-specific files in a dimension-specific
+subdirectory. For instance, we would put the 'app.yml' for the dimension
+'culture => en, theme => corporate' in apps/frontend/config/en_corporate/app.yml,
+and module.yml in apps/frontend/modules/demo/config/en_corporate/module.yml.
+
+As with all of these settings, configurations are searched for in the order
+specified by the original dimensions.yml file.  Any setting not specified in
+one file will cause us to look in the subsequent files down the list. The order
+is determined by applying a cartesian iteration, thus culture => en, theme =>
+corporate ends up as a dimension 'en_corporate'. The search order will be from
+most specific to generic: 'en_corporate', 'corporate', 'en', generic.  If
+multiple configuration files are found in multiple paths, they will be merged
+with the most specific values having precedence.
+
+Let's try this.  Let's create a setting 'site' that we'll echo for a new 'test'
+action.  Put this into apps/frontend/modules/demo/templates/testSuccess.php
+(the generic location):
+
+    <h1>demo:test</h1>
+    <p>We are in the test template now.  Site setting is <?php echo $site ?>.</p>
+
+
+Now add the action:
+
+apps/frontend/modules/demo/actions/actions.class.php
+
+    
+    <?php
+    class demoActions extends sfAction
+    {
+      public function executeTest()
+      {
+        $this->site = sfConfig::get('app_site');
+      }
+    }
+    ?>
+
+
+Now we just need to establish the setting itself.  This is an app-level setting
+(app_) so it belongs in the app.yml file.  Let's create a base value.  Create
+apps/frontend/config/app.yml:
+
+
+    all:
+      site: base
+
+
+
+Now clear the cache (for now you'll need to do this whenever you add new action
+code) and load the page at http://example.com/demo/test (change the
+hostname for your box). You'll see the base setting.  Now hit
+http://example.com/demo/test?culture=fr.  The setting is still base even
+though you're in the fr culture.  Let's make a fr-specific setting.  Create
+apps/frontend/config/fr/app.yml:
+
+
+    all:
+      site: fr
+
+
+Now clear your configuration cache (symfony cc) and reload the last page.  What about
+a theme?  Try this URL:
+http://example.com/demo/test?culture=fr&theme=corporate.  It still says fr
+because the fr_corporate site inherits the fr settings.  Let's override this
+value again.  Create apps/frontend/config/fr_corporate/app.yml:
+
+
+    all:
+      site: fr_corporate
+
+
+Clear the cache, and reload.  There you go.  If you go back to the previous
+URLs pages you'll see that they each show the appropriate value, overriding the
+base where necessary.
+
+For all configuration files, symfony will load all of the dimension-specific configuration files given
+the specialization path specified by dimensions.yml (e.g. en_corporate, corporate, en,
+generic) with the earlier files' settings overriding the later ones.  Otherwise, the
+configurations work just as they did before the dimension-specific specialization. See
+[http://www.symfony-project.org/book/trunk/05-Configuring-Symfony the symfony book] for
+more information about these files.
+
+Extending Views
+---------------
+
+Dimension-specific templates are placed in the templates/<dimension>/
+directory.  They are searched for in the order specified by the dimensions.yml
+file, and the first found of the appropriate name is used.
+
+Let's add some dimension-specific templates for our new action.
+apps/frontend/modules/demo/templates/fr/testSuccess.php:
+
+
+
+    <h1>demo:test for fr</h1>
+    <p>We are in the test/france template now.  Site setting is <?php echo $site ?>.</p>
+
+
+apps/frontend/modules/demo/templates/fr_corporate/templates/testSuccess.php:
+
+
+    <h1>demo:test for fr/corporate</h1>
+    <p>We are in the test/france/corporate template now.  Site setting is <?php echo $site ?>.</p>
+
+Now try the URLs from above, for base, fr, and fr_corporate settings.  You
+should see all three templates, each showing the setting from the previous
+section as well.
+
+Extending Controllers
+---------------------
+
+Dimension-specific actions are placed in the actions/<dimension>/ directory.
+Since actions are specified in classes and classes need to have unique names,
+you need to append the standard class names with the dimension.  So
+demoActions for the en_corporate configuration would be
+demoActions_en_corporate.  This class would go in the
+actions/en_corporate/actions.class.php file.  The same is true for individual
+action classes as well.  fooAction_en_corporate class would go in the
+actions/en_corporate/actions/fooAction.class.php file.  Actions can inherit
+functionality from other actions and don't need to 'require' them.  You could
+have *demoActions extends baseDemoActions* if you want to
+share some behavior between all sites but override a specific action for
+'en_corporate' dimension.
+
+For example, let's just override the action for the all sites with the
+dimension 'fr_corporate'.
+
+apps/frontend/modules/demo/actions/fr_corporate/actions.class.php:
+
+    <?php
+    
+    require_once(dirname(__FILE__).'/../actions.class.php');
+    class demoActions extends baseDemoActions
+    {
+      public function executeTest()
+      {
+        parent::executeTest();
+        $this->site = 'override('.$this->site.')';
+      }
+    }
+    ?>
+
+
+You'll need to clear the cache.  Now reload the 'fr_corporate' url from above
+and you will see that we've overridden the site value on this page, while
+inheriting the behavior of the base action.
+
+
+Performance
+-----------
+
+Installing the ysfDimensionsPlugin adds little overhead to your project. The only overhead
+comes from looking for the same configuration files in multiple places. This is minimized
+significantly as the configuration files are still compiled and cached.
+
+
+Tests
+-----
+
+For a complete example of how to test applications with dimensions,
+please see the functional test project in plugins/ysfDimensionPlugin/test/fixtures/project.
+
+
+License
+-------
+
+Please see the packaged LICENSE file for the details of the MIT license.
+
+
+Todo
+----
+
+  * Namespacing for controller class names (extend execution filter)
+  * A tutorial binding change culture event to culture dimension

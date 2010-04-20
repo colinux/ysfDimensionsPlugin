@@ -1,0 +1,124 @@
+# production environment
+prod:
+  logger:
+    param:
+      level: error
+
+# development environment
+dev:
+  i18n:
+    param:
+      debug: on  # enable i18n debug mode
+
+# cli environment
+cli:
+  controller:
+    class: sfConsoleController
+  request:
+    class: sfConsoleRequest
+  response:
+    class: sfConsoleResponse
+  storage:
+    param:
+      auto_start: false  # disable session storage for command line
+
+# test environment
+test:
+  storage:
+    class: sfSessionTestStorage
+    param:
+      session_path: %SF_TEST_CACHE_DIR%/sessions
+
+# defaults for all environments
+all:
+  controller:
+    class: sfFrontWebController
+
+  request:
+    class: sfWebRequest
+
+  response:
+    class: sfWebResponse
+    param:
+      logging: %SF_LOGGING_ENABLED%
+      charset: %SF_CHARSET%
+
+  user:
+    class: sfBasicSecurityUser
+    param:
+      timeout:          9600
+      logging:          %SF_LOGGING_ENABLED%
+      use_flash:        true
+      default_culture:  %SF_DEFAULT_CULTURE%
+
+  storage:
+    class: sfSessionStorage
+    param:
+      auto_start:               true     # auto start sessions
+      session_name:             symfony               # name of session cookie
+      # session_cookie_domain:  .example.com          # bound session cookie to specific domain
+      session_cookie_path:      /                     # bound session cookie to specific path of domain
+      session_cookie_lifetime:  77760000              # life of session cookie 90*24*3600
+      session_cookie_secure:    false                 # only send cookie if connection is secure
+      session_cookie_http_only: false                 # cookie can only be accessed via http protocol
+
+  cache:
+    class: sfAPCCache          # cache class: sfAPCCache, sfXCacheCache, sfMemcacheCache, sfEAccelleratorCache
+    param:
+      automatic_cleaning_factor: 0
+      lifetime:  86400         # default cache ttl
+      prefix:    %SF_APP_DIR%  # prefix
+
+  view_cache:
+    class: sfAPCCache
+    param:
+      automatic_cleaning_factor: 0
+      lifetime:  86400         # default cache ttl
+      prefix:    %SF_APP_DIR%  # prefix
+
+  i18n:
+    class: sfI18N
+    param:
+      source:               XLIFF   # i18n source
+      debug:                off     # debug mode enabled?
+      untranslated_prefix:  "[T]"   # prefix for untranslated strings
+      untranslated_suffix:  "[/T]"  # suffix for untranslated strings
+      cache:
+        class: sfAPCCache
+        param:
+          automatic_cleaning_factor: 0
+          lifetime:                  31556926
+          prefix:                    %SF_APP_DIR%
+
+  routing:
+    class: sfPatternRouting         # routing class: sfPatternRouting, sfPathInfoRouting, sfNoRouting
+    param:
+      load_configuration:   true    # load routing.yml configuration
+      suffix:               .       # Default suffix for generated URLs. If set to a single dot (.), no suffix is added. Possible values: .html, .php, and so on.
+      default_module:       default
+      default_action:       index
+      debug:                %SF_DEBUG%
+      logging:              %SF_LOGGING_ENABLED%
+      cache:
+        class: sfAPCCache
+        param:
+          automatic_cleaning_factor: 0
+          lifetime:                  31556926
+          prefix:                    %SF_APP_DIR%
+
+  logger:
+    class: sfAggregateLogger
+    param:
+      level: debug                          # error level for loggers
+      loggers:                              # error loggers to notify
+        sf_web_debug_logger:
+          class: sfWebDebugLogger           # web debug logger class
+          param:
+            level:          debug           # error level for web debug toolbar
+            condition:      %SF_WEB_DEBUG%  # switch on or off based on setting
+            xdebug_logging: true            # enable xdebug profiling
+        sf_file_logger:
+          class: sfFileLogger
+          param:
+            level:  debug                                       # error level for log file
+            file:   %SF_LOG_DIR%/%SF_APP%_%SF_ENVIRONMENT%.log  # path to log file

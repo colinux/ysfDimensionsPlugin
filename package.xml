@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.7.2" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+    http://pear.php.net/dtd/tasks-1.0.xsd
+    http://pear.php.net/dtd/package-2.0
+    http://pear.php.net/dtd/package-2.0.xsd">
+ <name>ysfDimensionsPlugin</name>
+ <channel>pear.symfony-project.com</channel>
+ <summary>ysfDimensionsPlugin provides dimensions to configurations, templates, and controllers..</summary>
+ <description>ysfDimensionsPlugin provides dimensions to configurations, templates, and controllers.</description>
+ <lead>
+  <name>Dustin Whittle</name>
+  <user>dwhittle</user>
+  <email>dustin.whittle@symfony-project.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2010-04-19</date>
+ <version>
+  <release>1.4.0</release>
+  <api>1.4.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/mit-license.php">MIT License</license>
+ <notes>--</notes>
+ <contents>
+  <dir baseinstalldir="/" name="/">
+   <dir name="lib">
+    <dir name="config">
+     <file name="ysfApplicationConfiguration.class.php" role="data" />
+     <file name="ysfConfigDimension.class.php" role="data" />
+     <file name="ysfProjectConfiguration.class.php" role="data" />
+    </dir> <!-- /lib/config -->
+    <dir name="util">
+     <file name="ysfCartesianIterator.class.php" role="data" />
+    </dir> <!-- /lib/util -->
+   </dir> <!-- /lib -->
+   <dir name="test">
+    <dir name="fixtures">
+     <dir name="project">
+      <dir name="apps">
+       <dir name="dimensions">
+        <dir name="config">
+         <dir name="fr">
+          <file name="app.yml" role="data" />
+          <file name="view.yml" role="data" />
+         </dir> <!-- /test/fixtures/project/apps/dimensions/config/fr -->
+         <dir name="sp1">
+          <file name="app.yml" role="data" />
+         </dir> <!-- /test/fixtures/project/apps/dimensions/config/sp1 -->
+         <file name="app.yml" role="data" />
+         <file name="cache.yml" role="data" />
+         <file name="dimensionsConfiguration.class.php" role="data" />
+         <file name="factories.yml" role="data" />
+         <file name="filters.yml" role="data" />
+         <file name="routing.yml" role="data" />
+         <file name="security.yml" role="data" />
+         <file name="settings.yml" role="data" />
+         <file name="view.yml" role="data" />
+        </dir> <!-- /test/fixtures/project/apps/dimensions/config -->
+        <dir name="modules">
+         <dir name="test">
+          <dir name="actions">
+           <dir name="fr">
+            <file name="actions.class.php" role="data" />
+           </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/actions/fr -->
+           <file name="actions.class.php" role="data" />
+           <file name="components.class.php" role="data" />
+          </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/actions -->
+          <dir name="config">
+           <dir name="corp">
+            <file name="view.yml" role="data" />
+           </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/config/corp -->
+           <file name="view.yml" role="data" />
+          </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/config -->
+          <dir name="lib">
+           <file name="BaseTestActions.class.php" role="data" />
+          </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/lib -->
+          <dir name="templates">
+           <dir name="fr">
+            <file name="indexSuccess.php" role="data" />
+           </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/templates/fr -->
+           <dir name="fr_corp">
+            <file name="indexSuccess.php" role="data" />
+           </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/templates/fr_corp -->
+           <file name="indexSuccess.php" role="data" />
+          </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test/templates -->
+         </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test -->
+         <dir name="test2">
+          <dir name="actions">
+           <file name="actions.class.php" role="data" />
+          </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test2/actions -->
+          <dir name="templates">
+           <file name="indexSuccess.php" role="data" />
+          </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test2/templates -->
+         </dir> <!-- /test/fixtures/project/apps/dimensions/modules/test2 -->
+        </dir> <!-- /test/fixtures/project/apps/dimensions/modules -->
+        <dir name="templates">
+         <dir name="corp">
+          <file name="layout.php" role="data" />
+         </dir> <!-- /test/fixtures/project/apps/dimensions/templates/corp -->
+         <file name="layout.php" role="data" />
+        </dir> <!-- /test/fixtures/project/apps/dimensions/templates -->
+       </dir> <!-- /test/fixtures/project/apps/dimensions -->
+      </dir> <!-- /test/fixtures/project/apps -->
+      <dir name="config">
+       <dir name="corp">
+        <file name="databases.yml" role="data" />
+       </dir> <!-- /test/fixtures/project/config/corp -->
+       <file name="apache.conf" role="data" />
+       <file name="databases.yml" role="data" />
+       <file name="dimensions.yml" role="data" />
+       <file name="ProjectConfiguration.class.php" role="data" />
+       <file name="propel.ini" role="data" />
+       <file name="properties.ini" role="data" />
+       <file name="rsync_exclude.txt" role="data" />
+       <file name="schema.yml" role="data" />
+      </dir> <!-- /test/fixtures/project/config -->
+      <dir name="data">
+       <dir name="generator">
+        <dir name="sfPropelAdmin">
+         <dir name="default">
+          <dir name="template">
+           <dir name="fr_corp">
+            <dir name="templates">
+             <file name="_list.php" role="data" />
+            </dir> <!-- /test/fixtures/project/data/generator/sfPropelAdmin/default/template/fr_corp/templates -->
+           </dir> <!-- /test/fixtures/project/data/generator/sfPropelAdmin/default/template/fr_corp -->
+          </dir> <!-- /test/fixtures/project/data/generator/sfPropelAdmin/default/template -->
+         </dir> <!-- /test/fixtures/project/data/generator/sfPropelAdmin/default -->
+        </dir> <!-- /test/fixtures/project/data/generator/sfPropelAdmin -->
+       </dir> <!-- /test/fixtures/project/data/generator -->
+      </dir> <!-- /test/fixtures/project/data -->
+      <dir name="plugins">
+       <dir name="ysfDimensionsTestPlugin">
+        <dir name="modules">
+         <dir name="test">
+          <dir name="actions">
+           <dir name="fr">
+            <file name="actions.class.php" role="data" />
+           </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/actions/fr -->
+           <file name="actions.class.php" role="data" />
+          </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/actions -->
+          <dir name="config">
+           <dir name="fr">
+            <file name="view.yml" role="data" />
+           </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/config/fr -->
+           <dir name="fr_corp">
+            <file name="view.yml" role="data" />
+           </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/config/fr_corp -->
+           <file name="view.yml" role="data" />
+          </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/config -->
+          <dir name="templates">
+           <dir name="fr">
+            <file name="indexSuccess.php" role="data" />
+           </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/templates/fr -->
+           <dir name="fr_corp">
+            <file name="indexSuccess.php" role="data" />
+           </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/templates/fr_corp -->
+          </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test/templates -->
+         </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules/test -->
+        </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin/modules -->
+       </dir> <!-- /test/fixtures/project/plugins/ysfDimensionsTestPlugin -->
+      </dir> <!-- /test/fixtures/project/plugins -->
+      <dir name="test">
+       <dir name="bootstrap">
+        <file name="functional.php" role="data" />
+        <file name="unit.php" role="data" />
+       </dir> <!-- /test/fixtures/project/test/bootstrap -->
+       <dir name="functional">
+        <dir name="dimensions">
+         <file name="testActionsTest.php" role="data" />
+        </dir> <!-- /test/fixtures/project/test/functional/dimensions -->
+       </dir> <!-- /test/fixtures/project/test/functional -->
+      </dir> <!-- /test/fixtures/project/test -->
+      <dir name="web">
+       <dir name="css">
+        <file name="main.css" role="data" />
+       </dir> <!-- /test/fixtures/project/web/css -->
+       <file name="dimensions_dev.php" role="data" />
+       <file name="index.php" role="data" />
+       <file name="robots.txt" role="data" />
+      </dir> <!-- /test/fixtures/project/web -->
+      <file name="symfony" role="data" />
+     </dir> <!-- /test/fixtures/project -->
+    </dir> <!-- /test/fixtures -->
+    <dir name="functional">
+     <file name="dimensionsTest.php" role="data" />
+    </dir> <!-- /test/functional -->
+    <dir name="unit">
+     <dir name="config">
+      <file name="ysfConfigDimensionTest.php" role="data" />
+     </dir> <!-- /test/unit/config -->
+     <dir name="util">
+      <file name="ysfCartestianIteratorTest.php" role="data" />
+     </dir> <!-- /test/unit/util -->
+    </dir> <!-- /test/unit -->
+   </dir> <!-- /test -->
+   <file name="LICENSE" role="data" />
+   <file name="LICENSE.yahoo" role="data" />
+   <file name="README" role="data" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.1</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.1</min>
+   </pearinstaller>
+   <package>
+    <name>symfony</name>
+    <channel>pear.symfony-project.com</channel>
+    <min>1.3.0</min>
+    <max>1.5.0</max>
+   </package>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>1.4.0</release>
+    <api>1.4.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2008-05-26</date>
+   <license uri="http://www.opensource.org/licenses/mit-license.php">MIT License</license>
+   <notes>--</notes>
+  </release>
+ </changelog>
+</package>

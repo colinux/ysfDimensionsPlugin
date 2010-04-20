@@ -1,0 +1,6 @@
+allowed:
+  culture:  [en, fr, it, de]
+  skin:     [corp, mybrand]
+  host:     [sp1, re4]
+
+default:    { culture: en, host: sp1 }

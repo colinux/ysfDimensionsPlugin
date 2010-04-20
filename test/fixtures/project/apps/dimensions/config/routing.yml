@@ -1,0 +1,27 @@
+homepage:
+  url:   /test
+  param: { module: test, action: index }
+
+homepage:
+  url:   /test2
+  param: { module: test2, action: index }
+
+# default rules
+
+homepage:
+  url:   /
+  param: { module: test, action: index }
+
+default_symfony:
+  url:   /symfony/:action/*
+  param: { module: default }
+
+default_index:
+  url:   /:module
+  param: { action: index }
+
+default:
+  url:   /:module/:action/*
+
+sf_cache_partial:
+  url:   /sf_cache_partial/:module/:action/:sf_cache_key.
