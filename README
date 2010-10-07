@@ -1,3 +1,9 @@
+Note
+====
+
+This is a simple copy from svn repository of the ysfDimensionsPlugin, without modification (apart this note). All credits go to the plugin developer, Dustin Whittle.
+
+
 ysfDimensionsPlugin
 ===================
 
@@ -83,16 +89,16 @@ Edit project/config/ProjectConfiguration.class.php
 	class ProjectConfiguration extends ysfProjectConfiguration
 	{
 	  public function setup()
-	  {  	    
+	  {
 	    // setup dimensions before calling parent::configure();
 	    $this->setDimension(array('culture' => isset($_REQUEST['sf_culture']) ? $_REQUEST['sf_culture'] : 'en_US'));
-	    
+
 	    $this->dispatcher->connect('user.change_culture', array($this, 'listenToChangeUserCulture'));
-	  	  	
+
 	    parent::setup();
 	  }
-	  
-	
+
+
 	  /**
 	   * Listener for the user.change_culture event.
 	   */
@@ -100,7 +106,7 @@ Edit project/config/ProjectConfiguration.class.php
 	  {
 	    $user = $event->getSubject();
 	    $culture = $event['culture'];
-	
+
 	    // do something with the user culture
 			sfProjectConfiguration::getActive()->setDimension(array('culture' => $event['culture']));
 	  }
@@ -194,7 +200,7 @@ Now add the action:
 
 apps/frontend/modules/demo/actions/actions.class.php
 
-    
+
     <?php
     class demoActions extends sfAction
     {
@@ -298,7 +304,7 @@ dimension 'fr_corporate'.
 apps/frontend/modules/demo/actions/fr_corporate/actions.class.php:
 
     <?php
-    
+
     require_once(dirname(__FILE__).'/../actions.class.php');
     class demoActions extends baseDemoActions
     {
