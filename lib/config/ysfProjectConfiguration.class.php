@@ -43,18 +43,23 @@ class ysfProjectConfiguration extends sfProjectConfiguration
    */
   public static function listenToClearCache(sfEvent $event)
   {
-  	foreach(sfProjectConfiguration::getActive()->getDimension()->getAllowed() as $dimensionName => $dimensions)
+    // some applications could not define dimensions for project
+    if ($projectConfigurationDimension = sfProjectConfiguration::getActive()->getDimension())
     {
-    	foreach($dimensions as $dimension)
-    	{
-    		$sf_cache_dir = sfConfig::get('sf_root_dir').'/cache/'.$dimension;
-    		if(is_dir($sf_cache_dir))
-    		{
-    			sfToolkit::clearDirectory($sf_cache_dir);
-    		}
-    	}
+      foreach($projectConfigurationDimension->getAllowed() as $dimensionName => $dimensions)
+      {
+        foreach($dimensions as $dimension)
+        {
+          $sf_cache_dir = sfConfig::get('sf_root_dir').'/cache/'.$dimension;
+          if(is_dir($sf_cache_dir))
+          {
+            sfToolkit::clearDirectory($sf_cache_dir);
+          }
+        }
+      }
     }
   }
+
 
   /**
    * Sets the project dimension.
