@@ -106,10 +106,16 @@ class ysfProjectConfiguration extends sfProjectConfiguration
         // set dimension
         $this->dimension->set($dimension);
 
-        sfConfig::set('sf_dimension', $this->dimension->getName());
+        $name = $this->dimension->getName();
+        sfConfig::set('sf_dimension', $name);
 
         // if dimension changes, change cache dir
-        $this->setCacheDir($this->getRootDir().'/cache/'.$this->dimension->getName());
+        if ($name) {
+          $this->setCacheDir($this->getRootDir().'/cache/'.$name);
+        }
+        else {
+          $this->setCacheDir($this->getRootDir().'/cache'); // avoid trailing /
+        }
       }
       catch (sfException $e)
       {
