@@ -102,6 +102,9 @@ class ysfProjectConfiguration extends sfProjectConfiguration
 
           $this->dimension = new ysfConfigDimension($this->getEventDispatcher(), $cache);
         }
+        elseif ($this->dimension->get() != $this->dimension->clean($dimension)) {
+          $change_dimension = true;
+        }
 
         // set dimension
         $this->dimension->set($dimension);
@@ -115,6 +118,11 @@ class ysfProjectConfiguration extends sfProjectConfiguration
         }
         else {
           $this->setCacheDir($this->getRootDir().'/cache'); // avoid trailing /
+        }
+
+
+        if (isset($change_dimension) && $change_dimension) {
+          $this->dispatcher->notify(new sfEvent(null, 'application.change_dimension'));
         }
       }
       catch (sfException $e)
